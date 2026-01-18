@@ -4,6 +4,7 @@ import com.example.moviebooking.Service.BookingService;
 import com.example.moviebooking.Service.PaymentService;
 import com.razorpay.RazorpayException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -61,6 +62,7 @@ public class PaymentController {
 
                 response.put("success", true);
                 response.put("message", "Payment confirmed and seats booked");
+
                 return ResponseEntity.ok(response);
             } else {
                 response.put("success", false);

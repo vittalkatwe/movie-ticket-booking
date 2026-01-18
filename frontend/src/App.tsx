@@ -428,7 +428,7 @@ function App() {
     <div className="bg-slate-800/50 backdrop-blur rounded-2xl p-8 shadow-2xl border border-slate-700">
       <div className="text-center py-12">
         <Loader2 className="w-16 h-16 text-blue-500 animate-spin mx-auto mb-4" />
-        <h2 className="text-2xl font-bold text-white mb-2">Processing Payment</h2>
+        <h2 className="text-2xl font-bold text-white mb-2">Processing Payment. Please wait a few seconds...</h2>
         <p className="text-slate-300">Please complete the payment in the Razorpay window</p>
         <p className="text-slate-400 text-sm mt-4">Seats are held for 6 minutes</p>
       </div>

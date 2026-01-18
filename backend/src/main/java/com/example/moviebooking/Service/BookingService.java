@@ -8,7 +8,9 @@ import com.example.moviebooking.dto.HoldSeatRequest;
 import com.example.moviebooking.repository.HoldRepository;
 import com.example.moviebooking.repository.SeatRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.stereotype.Service;         
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -20,10 +22,12 @@ public class BookingService {
 
     private final SeatRepository seatRepository;
     private final HoldRepository holdRepository;
+    private final JavaMailSender mailSender;
 
-    public BookingService(SeatRepository seatRepository, HoldRepository holdRepository) {
+    public BookingService(SeatRepository seatRepository, HoldRepository holdRepository, JavaMailSender mailSender) {
         this.seatRepository = seatRepository;
         this.holdRepository = holdRepository;
+        this.mailSender = mailSender;
     }
 
     @Transactional
@@ -59,14 +63,22 @@ public class BookingService {
     @Transactional
     public void confirmBooking(List<Long> holdIds) {
         List<Hold> holds = holdRepository.findByIdIn(holdIds);
-
+        String seats="";
         for (Hold hold : holds) {
+            seats+=hold.getSeat().getSeatNumber()+", ";
             hold.setStatus(HoldStatus.COMPLETED);
             Seat seat = hold.getSeat();
             seat.setStatus(SeatStatus.BOOKED);
             seatRepository.save(seat);
             holdRepository.save(hold);
         }
+        Hold hold = holds.get(0);
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(hold.getUserEmail());
+        message.setSubject("Seat Confirmation");
+        seats = seats.substring(0, seats.length()-2);
+        message.setText("Your seat "+seats +" have been confirmed.");
+        mailSender.send(message);
     }
 
     @Transactional
